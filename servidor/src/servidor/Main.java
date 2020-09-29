@@ -13,18 +13,15 @@ public class Main {
 	// Estrutura e manipulação lista encadeada
 	public static class Elemento {
 		int valor;
-		int posicao;
 		Elemento prox;
 
-		public Elemento(int valor, int posicao) {
+		public Elemento(int valor) {
 			this.valor = valor;
-			this.posicao = posicao;
 			this.prox = null;
 		}
 
-		public Elemento(int valor, int posicao, Elemento prox) {
+		public Elemento(int valor, Elemento prox) {
 			this.valor = valor;
-			this.posicao = posicao;
 			this.prox = prox;
 		}
 	}
@@ -45,12 +42,12 @@ public class Main {
 
 	public static void listarElementos() {
 		Elemento aux = inicio;
-		System.out.print("[");
+		System.out.println("[");
 		while (aux != null) {
-			System.out.print(aux.valor + ", ");
+			System.out.println(aux.valor);
 			aux = aux.prox;
 		}
-		System.out.print("]\n");
+		System.out.println("]\n");
 	}
 
 	public static void inserirElementoFim(Elemento novo) {
@@ -157,36 +154,45 @@ public class Main {
 		}
 	}
 
-//	public static List<Elemento> ordenarQuickLista(List<Elemento> lista, int inicio, int fim) {
-//		if (inicio < fim) {
-//			int pIndice = quickTrocaLista(lista, inicio, fim);
-//			ordenarQuickLista(lista, inicio, pIndice - 1);
-//			ordenarQuickLista(lista, pIndice + 1, fim);
-//		}
-//		
-//		return lista;
-//	}
+	public static Elemento quickSortLista(Elemento elemento) {
+		if (elemento == null)
+			return null;
 
-//	public static int quickTrocaLista(List<Elemento> lista, int inicio, int fim) {
-//		int aux;
-//		int pivot = lista.get(fim).getValor();
-//		int pIndice = inicio;
-//		
-//		for (int i = inicio; i < fim; i++) {
-//			if (lista.get(i).getValor() <= pivot) {
-//				aux = lista.get(i).getValor();
-//				lista.get(i).setValor(lista.get(pIndice).getValor());
-//				lista.get(pIndice).setValor(aux);
-//				pIndice ++;
-//			}
-//		}
-//		
-//		aux = lista.get(pIndice).getValor();
-//		lista.get(pIndice).setValor(lista.get(fim).getValor());
-//		lista.get(fim).setValor(aux);
-//		
-//		return pIndice;
-//	}
+		Elemento i = elemento;
+		Elemento j = elemento.prox;
+		Elemento pvt = elemento;
+		Elemento store = null;
+		Elemento ptr = null;
+		int temp;
+
+		while (j != null) {
+			if (j.valor < pvt.valor) {
+				store = i;
+				ptr = i.prox;
+
+				i = i.prox;
+
+				temp = i.valor;
+				i.valor = j.valor;
+				j.valor = temp;
+			}
+			j = j.prox;
+		}
+
+		if (i != elemento) {
+			temp = i.valor;
+			i.valor = pvt.valor;
+			pvt.valor = temp;
+
+			store.prox = null;
+			quickSortLista(elemento);
+			store.prox = ptr;
+		}
+
+		quickSortLista(i.prox);
+
+		return elemento;
+	}
 
 	public static void main(String[] args) throws IOException {
 		Socket socket;
@@ -208,7 +214,7 @@ public class Main {
 
 			// Verificando qual tipo de estrura o cliente escolheu
 			if (Integer.valueOf(msgCliente) == 1) {
-				int vetor[] = new int[10];
+				int vetor[] = new int[250000];
 
 				// Recebendo os valores do cliente
 				for (int i = 0; i < vetor.length; i++) {
@@ -260,11 +266,11 @@ public class Main {
 			} else if (Integer.valueOf(msgCliente) == 2) {
 				listaEncadeada();
 				// Recebendo os valores do cliente
-				for (int i = 0; i < 10; i++) {
+				for (int i = 0; i < 250000; i++) {
 					msgCliente = requisicao.readLine();
 
 					// Atribuindo os valores recebidos na lista
-					Elemento novo = new Elemento(Integer.valueOf(msgCliente), i);
+					Elemento novo = new Elemento(Integer.valueOf(msgCliente));
 					inserirElementoFim(novo);
 
 					resposta.writeBytes("Valor " + msgCliente + " recebido e armazenado");
@@ -293,11 +299,11 @@ public class Main {
 					break;
 				case 2:
 					tempoInicio = System.currentTimeMillis();
-//						lista = ordenarQuickLista(lista, 0, lista.size() - 1);
+					quickSortLista(inicio);
 					tempoFim = System.currentTimeMillis() - tempoInicio;
 
 					// Imprimindo a lista ordenada
-//						imprimirLista(lista);
+					listarElementos();
 					System.out.println();
 
 					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
@@ -305,7 +311,7 @@ public class Main {
 					break;
 				}
 			} else if (Integer.valueOf(msgCliente) == 3) {
-				int vetor[] = new int[20];
+				int vetor[] = new int[250000];
 
 				for (int i = 0; i < vetor.length; i++) {
 					msgCliente = requisicao.readLine();

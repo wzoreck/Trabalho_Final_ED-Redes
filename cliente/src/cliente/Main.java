@@ -40,8 +40,8 @@ public class Main {
 			msgCliente.write("\n"); // Fim da linha
 			msgCliente.flush(); // Envia mensagem
 
-			for (int i = 0; i < 10; i++) {
-				numero = aleatorio.nextInt(10);
+			for (int i = 0; i < 250000; i++) {
+				numero = aleatorio.nextInt(1000);
 
 				try {
 					System.out.println("Enviou " + numero);
