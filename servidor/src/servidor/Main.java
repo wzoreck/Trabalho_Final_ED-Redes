@@ -127,40 +127,36 @@ public class Main {
 			k++;
 		}
 	}
-	
+
 	public static void imprimirVetor(int[] vetor) {
 		System.out.print("[");
 		for (int i = 0; i < vetor.length; i++) {
-			if (i != vetor.length - 1)
-				System.out.print(vetor[i] + ", ");
-			else
-				System.out.print(vetor[i]);
+			System.out.print(vetor[i] + ", ");
 		}
 		System.out.print("]");
 	}
 	// ./Ordenação com vetor
 
-//	public static List<Elemento> ordenarBubbleLista(List<Elemento> lista, int n) {
-//		int aux;
-//		boolean troca;
-//		
-//		for(int i = 0; i < n-1; i++) {
-//			troca = false;
-//			for(int j = 0; j < n-1; j++) {
-//				if(lista.get(j).getValor() > lista.get(j+1).getValor()) {
-//					aux = lista.get(j).getValor();
-//					lista.get(j).setValor(lista.get(j+1).getValor());
-//					lista.get(j+1).setValor(aux);
-//					troca = true;
-//				}
-//			}
-//			if(troca == false)
-//				break;
-//		}
-//		
-//		return lista;
-//	}
-//	
+	public static void ordenarBubbleLista(Elemento inicio, int tamanho) {
+		int auxValor;
+		Elemento elemento;
+		Elemento elementoAux;
+
+		for (int i = 0; i < tamanho - 1; i++) {
+			elemento = inicio;
+			elementoAux = inicio.prox;
+			for (int j = 0; j < tamanho - 1; j++) {
+				if (elemento.valor > elementoAux.valor) {
+					auxValor = elemento.valor;
+					elemento.valor = elementoAux.valor;
+					elementoAux.valor = auxValor;
+				}
+				elemento = elemento.prox;
+				elementoAux = elementoAux.prox;
+			}
+		}
+	}
+
 //	public static List<Elemento> ordenarQuickLista(List<Elemento> lista, int inicio, int fim) {
 //		if (inicio < fim) {
 //			int pIndice = quickTrocaLista(lista, inicio, fim);
@@ -170,7 +166,7 @@ public class Main {
 //		
 //		return lista;
 //	}
-//
+
 //	public static int quickTrocaLista(List<Elemento> lista, int inicio, int fim) {
 //		int aux;
 //		int pivot = lista.get(fim).getValor();
@@ -195,8 +191,8 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		Socket socket;
 		ServerSocket socketServidor = new ServerSocket(2800);
-		;
-		long inicio, fim;
+
+		long tempoInicio, tempoFim;
 		Runtime rt;
 
 		while (true) {
@@ -212,7 +208,7 @@ public class Main {
 
 			// Verificando qual tipo de estrura o cliente escolheu
 			if (Integer.valueOf(msgCliente) == 1) {
-				int vetor[] = new int[300];
+				int vetor[] = new int[10];
 
 				// Recebendo os valores do cliente
 				for (int i = 0; i < vetor.length; i++) {
@@ -235,36 +231,36 @@ public class Main {
 				switch (Integer.valueOf(msgCliente)) {
 				case 1:
 					rt = Runtime.getRuntime();
-					inicio = System.currentTimeMillis();
+					tempoInicio = System.currentTimeMillis();
 					vetor = selectionSortVetor(vetor, vetor.length);
-					fim = System.currentTimeMillis() - inicio;
+					tempoFim = System.currentTimeMillis() - tempoInicio;
 					System.out.println("Memória usada: " + (Runtime.getRuntime().freeMemory() - rt.freeMemory()));
 
 					// Imprimindo o vetor ordenado
 					imprimirVetor(vetor);
 					System.out.println();
 
-					System.out.println("Tempo para ordenação em milisegundos: " + fim + "ms\n"
-							+ "Tempo para ordenação em segundos: " + fim / 1000 + "s");
+					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
+							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
 
 					break;
 				case 2:
-					inicio = System.currentTimeMillis();
+					tempoInicio = System.currentTimeMillis();
 					vetor = mergeSortVetor(vetor, vetor.length);
-					fim = System.currentTimeMillis() - inicio;
+					tempoFim = System.currentTimeMillis() - tempoInicio;
 
 					// Imprimindo o vetor ordenado
 					imprimirVetor(vetor);
 					System.out.println();
 
-					System.out.println("Tempo para ordenação em milisegundos: " + fim + "ms\n"
-							+ "Tempo para ordenação em segundos: " + fim / 1000 + "s");
+					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
+							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
 					break;
 				}
 			} else if (Integer.valueOf(msgCliente) == 2) {
 				listaEncadeada();
 				// Recebendo os valores do cliente
-				for (int i = 0; i < 300; i++) {
+				for (int i = 0; i < 10; i++) {
 					msgCliente = requisicao.readLine();
 
 					// Atribuindo os valores recebidos na lista
@@ -284,28 +280,28 @@ public class Main {
 
 				switch (Integer.valueOf(msgCliente)) {
 				case 1:
-					inicio = System.currentTimeMillis();
-//						lista = ordenarBubbleLista(lista, lista.size());
-					fim = System.currentTimeMillis() - inicio;
+					tempoInicio = System.currentTimeMillis();
+					ordenarBubbleLista(inicio, tamanho);
+					tempoFim = System.currentTimeMillis() - tempoInicio;
 
 					// Imprimindo a lista ordenada
-//						imprimirLista(lista);
+					listarElementos();
 					System.out.println();
 
-					System.out.println("Tempo para ordenação em milisegundos: " + fim + "ms\n"
-							+ "Tempo para ordenação em segundos: " + fim / 1000 + "s");
+					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
+							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
 					break;
 				case 2:
-					inicio = System.currentTimeMillis();
+					tempoInicio = System.currentTimeMillis();
 //						lista = ordenarQuickLista(lista, 0, lista.size() - 1);
-					fim = System.currentTimeMillis() - inicio;
+					tempoFim = System.currentTimeMillis() - tempoInicio;
 
 					// Imprimindo a lista ordenada
 //						imprimirLista(lista);
 					System.out.println();
 
-					System.out.println("Tempo para ordenação em milisegundos: " + fim + "ms\n"
-							+ "Tempo para ordenação em segundos: " + fim / 1000 + "s");
+					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
+							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
 					break;
 				}
 			} else if (Integer.valueOf(msgCliente) == 3) {
@@ -325,16 +321,16 @@ public class Main {
 				imprimirVetor(vetor);
 				System.out.println();
 
-				inicio = System.currentTimeMillis();
+				tempoInicio = System.currentTimeMillis();
 				Arrays.sort(vetor); // Estrutura de ordenação da linguagem
-				fim = System.currentTimeMillis() - inicio;
+				tempoFim = System.currentTimeMillis() - tempoInicio;
 
 				// Imprimindo o vetor ordenado
 				imprimirVetor(vetor);
 				System.out.println();
 
-				System.out.println("\nTempo para ordenação em milisegundos: " + fim + "\n"
-						+ "Tempo para ordenação em segundos: " + fim / 1000);
+				System.out.println("\nTempo para ordenação em milisegundos: " + tempoFim + "\n"
+						+ "Tempo para ordenação em segundos: " + tempoFim / 1000);
 			}
 
 			System.out.println();
