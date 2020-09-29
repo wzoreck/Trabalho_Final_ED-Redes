@@ -137,22 +137,22 @@ public class Main {
 	}
 	// ./Ordenação com vetor
 
-	public static void ordenarBubbleLista(Elemento inicio, int tamanho) {
-		int auxValor;
+	public static void bubbleSortLista(Elemento inicio, int tamanho) {
+		int valor;
 		Elemento elemento;
-		Elemento elementoAux;
+		Elemento proxElemento;
 
 		for (int i = 0; i < tamanho - 1; i++) {
 			elemento = inicio;
-			elementoAux = inicio.prox;
+			proxElemento = inicio.prox;
 			for (int j = 0; j < tamanho - 1; j++) {
-				if (elemento.valor > elementoAux.valor) {
-					auxValor = elemento.valor;
-					elemento.valor = elementoAux.valor;
-					elementoAux.valor = auxValor;
+				if (elemento.valor > proxElemento.valor) {
+					valor = elemento.valor;
+					elemento.valor = proxElemento.valor;
+					proxElemento.valor = valor;
 				}
 				elemento = elemento.prox;
-				elementoAux = elementoAux.prox;
+				proxElemento = proxElemento.prox;
 			}
 		}
 	}
@@ -281,7 +281,7 @@ public class Main {
 				switch (Integer.valueOf(msgCliente)) {
 				case 1:
 					tempoInicio = System.currentTimeMillis();
-					ordenarBubbleLista(inicio, tamanho);
+					bubbleSortLista(inicio, tamanho);
 					tempoFim = System.currentTimeMillis() - tempoInicio;
 
 					// Imprimindo a lista ordenada
