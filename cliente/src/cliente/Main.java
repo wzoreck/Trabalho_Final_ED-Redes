@@ -12,7 +12,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 
-		int tipoOrdenacao, tipoLista, numero;
+		int tipoOrdenacao, tipoLista, numero, totalValores;
 		boolean continuar = true;
 		Scanner sc = new Scanner(System.in);
 		Random aleatorio = new Random();
@@ -60,14 +60,18 @@ public class Main {
 			tipoLista = sc.nextInt();
 
 			if (tipoLista != 4) {
+				System.out.print("Informe o tamnho da lista a ser criada: ");
+				totalValores = sc.nextInt();
+				
 				socket = new Socket("localhost", 2800);
 				bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
 				enviar(bufferedWriter, String.valueOf(tipoLista));
+				enviar(bufferedWriter, String.valueOf(totalValores));
 
 				// Gerar valores aleatórios e enviar para o servidor
-				for (int i = 0; i < 20; i++) {
-					numero = aleatorio.nextInt(10);
+				for (int i = 0; i < totalValores; i++) {
+					numero = aleatorio.nextInt(1000);
 
 					System.out.println();
 					System.out.println((i + 1) + "º valor enviado: " + numero);

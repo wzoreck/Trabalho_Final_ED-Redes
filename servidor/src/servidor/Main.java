@@ -205,6 +205,7 @@ public class Main {
 		BufferedReader requisicao = null;
 		boolean continuar = true;
 		long tempoInicio, tempoFim;
+		int totalValores;
 		Runtime rt;
 
 		while (continuar) {
@@ -214,12 +215,13 @@ public class Main {
 
 			requisicao = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			msgCliente = requisicao.readLine();
+			totalValores = Integer.valueOf(requisicao.readLine());
 			System.out.println("Mensagem do cliente: " + msgCliente);
-
+			
 			resposta = new DataOutputStream(socket.getOutputStream());
 			// Verificando qual tipo de estrura o cliente escolheu
 			if (Integer.valueOf(msgCliente) == 1) {
-				int vetor[] = new int[20];
+				int vetor[] = new int[totalValores];
 
 				// Recebendo os valores do cliente
 				for (int i = 0; i < vetor.length; i++) {
@@ -271,7 +273,7 @@ public class Main {
 			} else if (Integer.valueOf(msgCliente) == 2) {
 				listaEncadeada();
 				// Recebendo os valores do cliente
-				for (int i = 0; i < 20; i++) {
+				for (int i = 0; i < totalValores; i++) {
 					msgCliente = requisicao.readLine();
 
 					// Atribuindo os valores recebidos na lista
@@ -316,7 +318,7 @@ public class Main {
 					break;
 				}
 			} else if (Integer.valueOf(msgCliente) == 3) {
-				int vetor[] = new int[20];
+				int vetor[] = new int[totalValores];
 
 				for (int i = 0; i < vetor.length; i++) {
 					msgCliente = requisicao.readLine();
