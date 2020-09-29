@@ -133,7 +133,9 @@ public class Main {
 		System.out.print("]");
 	}
 	// ./Ordenação com vetor
-
+	
+	
+	// Ordenação com lista
 	public static void bubbleSortLista(Elemento inicio, int tamanho) {
 		int valor;
 		Elemento elemento;
@@ -193,28 +195,31 @@ public class Main {
 
 		return elemento;
 	}
+	// ./Ordenação com lista
 
 	public static void main(String[] args) throws IOException {
-		Socket socket;
+		Socket socket = null;
 		ServerSocket socketServidor = new ServerSocket(2800);
-
+		String msgCliente = null;
+		DataOutputStream resposta = null;
+		BufferedReader requisicao = null;
+		boolean continuar = true;
 		long tempoInicio, tempoFim;
 		Runtime rt;
 
-		while (true) {
+		while (continuar) {
 			System.out.println("Aguardando mensagem...");
 			socket = socketServidor.accept(); // Aceitando uma requesição quando chegar
 			System.out.println("Chegou requisição");
 
-			BufferedReader requisicao = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			String msgCliente = requisicao.readLine();
+			requisicao = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			msgCliente = requisicao.readLine();
 			System.out.println("Mensagem do cliente: " + msgCliente);
 
-			DataOutputStream resposta = new DataOutputStream(socket.getOutputStream());
-
+			resposta = new DataOutputStream(socket.getOutputStream());
 			// Verificando qual tipo de estrura o cliente escolheu
 			if (Integer.valueOf(msgCliente) == 1) {
-				int vetor[] = new int[250000];
+				int vetor[] = new int[20];
 
 				// Recebendo os valores do cliente
 				for (int i = 0; i < vetor.length; i++) {
@@ -223,7 +228,7 @@ public class Main {
 
 					vetor[i] = Integer.valueOf(msgCliente);
 
-					resposta.writeBytes("Valor " + msgCliente + " recebido e armazenado");
+					resposta.writeBytes(msgCliente + " recebido e armazenado");
 					resposta.writeBytes("\n"); // Fim da linha
 					resposta.flush(); // Manda para o cliente
 				}
@@ -266,7 +271,7 @@ public class Main {
 			} else if (Integer.valueOf(msgCliente) == 2) {
 				listaEncadeada();
 				// Recebendo os valores do cliente
-				for (int i = 0; i < 250000; i++) {
+				for (int i = 0; i < 20; i++) {
 					msgCliente = requisicao.readLine();
 
 					// Atribuindo os valores recebidos na lista
@@ -311,7 +316,7 @@ public class Main {
 					break;
 				}
 			} else if (Integer.valueOf(msgCliente) == 3) {
-				int vetor[] = new int[250000];
+				int vetor[] = new int[20];
 
 				for (int i = 0; i < vetor.length; i++) {
 					msgCliente = requisicao.readLine();
@@ -337,9 +342,11 @@ public class Main {
 
 				System.out.println("\nTempo para ordenação em milisegundos: " + tempoFim + "\n"
 						+ "Tempo para ordenação em segundos: " + tempoFim / 1000);
+				
 			}
 
 			System.out.println();
 		}
+		System.out.println("Fim do programa!");
 	}
 }

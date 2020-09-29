@@ -1,106 +1,123 @@
 package cliente;
 
-import java.util.Scanner;
-import java.util.Random;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.Random;
+import java.util.Scanner;
 
 public class Main {
-	
-	public static void main(String[] args) throws IOException {
-		
-		int escolha, tipo, numero;
-		Scanner leitor = new Scanner(System.in);
+
+	public static void main(String[] args) throws Exception {
+
+		int tipoOrdenacao, tipoLista, numero;
+		boolean continuar = true;
+		Scanner sc = new Scanner(System.in);
 		Random aleatorio = new Random();
-		
-		BufferedWriter msgCliente;
-		BufferedReader leitorServidor;
-		String msgServidor;
-		
-		Socket socket;
-		while(true) {
-			System.out.println("---------------------------------------");
-			System.out.println("|   Escolha o tipo de armazenamento   |");
-			System.out.println("---------------------------------------");
-			System.out.println("|1 - Vetor                            |");
-			System.out.println("|2 - Lista encadeada                  |");
-			System.out.println("|3 - Estrutura própia da linguagem    |");
-			System.out.println("---------------------------------------");
-			tipo = leitor.nextInt();
-			socket = new Socket("localhost", 2800);
+		String msgRecebida;
+		BufferedWriter bufferedWriter = null;
+		BufferedReader bufferedReader;
+		Socket socket = null;
 
-			msgCliente = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-			msgCliente.write(String.valueOf(tipo)); // Armazenda a mensagem a ser enviada
-			msgCliente.write("\n"); // Fim da linha
-			msgCliente.flush(); // Envia mensagem
+		while (continuar) {
+			System.out.println();
+			System.out.println(
+					"█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗");
+			System.out.println(
+					"╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝");
 
-			for (int i = 0; i < 250000; i++) {
-				numero = aleatorio.nextInt(1000);
+			System.out.println("\n"
+					+ " ▄██████▄     ▄████████ ████████▄     ▄████████ ███▄▄▄▄      ▄████████     ███      ▄██████▄    ▄████████  \n"
+					+ "███    ███   ███    ███ ███   ▀███   ███    ███ ███▀▀▀██▄   ███    ███ ▀█████████▄ ███    ███   ███    ███ \n"
+					+ "███    ███   ███    ███ ███    ███   ███    █▀  ███   ███   ███    ███    ▀███▀▀██ ███    ███   ███    ███ \n"
+					+ "███    ███  ▄███▄▄▄▄██▀ ███    ███  ▄███▄▄▄     ███   ███   ███    ███     ███   ▀ ███    ███  ▄███▄▄▄▄██▀ \n"
+					+ "███    ███ ▀▀███▀▀▀▀▀   ███    ███ ▀▀███▀▀▀     ███   ███ ▀███████████     ███     ███    ███ ▀▀███▀▀▀▀▀   \n"
+					+ "███    ███ ▀███████████ ███    ███   ███    █▄  ███   ███   ███    ███     ███     ███    ███ ▀███████████ \n"
+					+ "███    ███   ███    ███ ███   ▄███   ███    ███ ███   ███   ███    ███     ███     ███    ███   ███    ███ \n"
+					+ " ▀██████▀    ███    ███ ████████▀    ██████████  ▀█   █▀    ███    █▀     ▄████▀    ▀██████▀    ███    ███ \n"
+					+ "\n");
 
-				try {
-					System.out.println("Enviou " + numero);
-					msgCliente = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-					msgCliente.write(String.valueOf(numero)); // Armazenda a mensagem a ser enviada
-					msgCliente.write("\n"); // Fim da linha
-					msgCliente.flush(); // Envia mensagem
+			System.out.println(
+					"█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗█████╗");
+			System.out.println(
+					"╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝╚════╝");
+			System.out.println();
+			System.out.println("|--------------------------------------|");
+			System.out.println("| Escolha o tipo de lista a ser criada |");
+			System.out.println("|--------------------------------------|");
+			System.out.println("|[1] - Vetor                           |");
+			System.out.println("|[2] - Lista encadeada                 |");
+			System.out.println("|[3] - Estrutura própia da linguagem   |");
+			System.out.println("|--------------------------------------|");
+			System.out.println("|Encerrar o programa                   |");
+			System.out.println("|--------------------------------------|");
+			System.out.println("|[4] - Sair                            |");
+			System.out.println("|--------------------------------------|");
+			System.out.println();
+			System.out.print("Informe a sua escolha: ");
+			tipoLista = sc.nextInt();
 
-					leitorServidor = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-					msgServidor = leitorServidor.readLine(); // Lê a resposta
-					System.out.println("Resposta do Servidor: " + msgServidor); // Mostra a mensagem
-				} catch (UnknownHostException e) {
-					System.out.println(e);
-				} catch (IOException e2) {
-					System.out.println(e2);
+			if (tipoLista != 4) {
+				socket = new Socket("localhost", 2800);
+				bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+				enviar(bufferedWriter, String.valueOf(tipoLista));
+
+				// Gerar valores aleatórios e enviar para o servidor
+				for (int i = 0; i < 20; i++) {
+					numero = aleatorio.nextInt(10);
+
+					System.out.println();
+					System.out.println((i + 1) + "º valor enviado: " + numero);
+
+					enviar(bufferedWriter, String.valueOf(numero));
+
+					bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					msgRecebida = bufferedReader.readLine(); // Lê a resposta do servidor
+					System.out.println("resposta do servidor, valor: " + msgRecebida);
 				}
 			}
 
-			if (tipo == 1 || tipo == 2) {
-				System.out.println("-----------------------------------");
-				System.out.println("|   Escolha o tipo de ordenação   |");
-				System.out.println("-----------------------------------");
-				System.out.println("|1 - n​2                           |");
-				System.out.println("|2 - n.log(n)                     |");
-				System.out.println("-----------------------------------");
-				escolha = leitor.nextInt();
+			if (tipoLista == 1 || tipoLista == 2) {
+				System.out.println();
+				System.out.println("|---------------------------------------------|");
+				System.out.println("| Escolha a complexidade do tipo de ordenação |");
+				System.out.println("|---------------------------------------------|");
+				System.out.println("|[1] - n​2                                     |");
+				System.out.println("|[2] - n.log(n)                               |");
+				System.out.println("|---------------------------------------------|");
+				System.out.println();
+				System.out.print("Informe a sua escolha: ");
+				tipoOrdenacao = sc.nextInt();
 
-				switch (escolha) {
-					case 1:
-						msgCliente = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-						msgCliente.write(String.valueOf(escolha)); // Armazenda a mensagem a ser enviada
-						msgCliente.write("\n"); // Fim da linha
-						msgCliente.flush(); // Envia mensagem
+				enviar(bufferedWriter, String.valueOf(tipoOrdenacao));
+				socket.close();
 
-						break;
-
-					case 2:
-						msgCliente = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-						msgCliente.write(String.valueOf(escolha)); // Armazenda a mensagem a ser enviada
-						msgCliente.write("\n"); // Fim da linha
-						msgCliente.flush(); // Envia mensagem
-
-						break;
-
-					default:
-						System.out.println("Opção inválida");
-						break;
-				}
-
+			} else if (tipoLista == 3) {
+				enviar(bufferedWriter, String.valueOf(tipoLista));
+				socket.close();
 			} else {
-				msgCliente = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-				msgCliente.write(String.valueOf(tipo)); // Armazenda a mensagem a ser enviada
-				msgCliente.write("\n"); // Fim da linha
-				msgCliente.flush(); // Envia mensagem
+				sc.close();
+				continuar = false;
+				bufferedWriter.close();
+				socket.close();
 			}
-			
-			msgCliente.close();
-			socket.close(); // Fechando o socket
 		}
 
+		System.out.println();
+		System.out.println("Fim do programa!");
+		System.out.println();
+		System.out.println("┌┐ ┬ ┬  ╔═╗┌┬┐┌─┐┌┬┐  ┌─┐┌┐┌┌┬┐  ╔╦╗┌─┐┌┐┌┬┌─┐┬  ");
+		System.out.println("├┴┐└┬┘  ╠═╣ ││├─┤│││  ├─┤│││ ││   ║║├─┤││││├┤ │  ");
+		System.out.println("└─┘ ┴   ╩ ╩─┴┘┴ ┴┴ ┴  ┴ ┴┘└┘─┴┘  ═╩╝┴ ┴┘└┘┴└─┘┴─┘");
+
+	}
+
+	public static void enviar(BufferedWriter bw, String mensagem) throws Exception {
+		bw.write(mensagem); // Armazenda a mensagem a ser enviada
+		bw.write("\n"); // Fim da linha
+		bw.flush(); // Envia mensagem
 	}
 }
