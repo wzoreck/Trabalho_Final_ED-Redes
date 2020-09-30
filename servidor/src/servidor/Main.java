@@ -10,6 +10,200 @@ import java.util.Arrays;
 
 public class Main {
 
+	public static void main(String[] args) throws Exception {
+		Socket socket = null;
+		ServerSocket socketServidor = new ServerSocket(2800);
+		String msgDoCliente = null, msgParaCliente;
+		DataOutputStream resposta = null;
+		BufferedReader bufferedReader = null;
+		long tempoInicio, tempoFim;
+		int totalValores;
+		Runtime rt;
+
+		while (true) {
+			System.out.println("Aguardando mensagem...");
+			socket = socketServidor.accept(); // Aceitando uma requesição quando chegar
+
+			bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			msgDoCliente = bufferedReader.readLine();
+			totalValores = Integer.valueOf(bufferedReader.readLine());
+			System.out.println("Mensagem do cliente: " + msgDoCliente);
+
+			resposta = new DataOutputStream(socket.getOutputStream());
+			// Verificando qual tipo de estrura o cliente escolheu
+			if (Integer.valueOf(msgDoCliente) == 1) {
+				int vetor[] = new int[totalValores];
+
+				// Recebendo os valores do cliente
+				for (int i = 0; i < vetor.length; i++) {
+					msgDoCliente = bufferedReader.readLine();
+					System.out.println("Valor que chegou do cliente: " + msgDoCliente);
+
+					vetor[i] = Integer.valueOf(msgDoCliente);
+
+					msgParaCliente = msgDoCliente + " recebido e armazenado";
+					responder(resposta, msgParaCliente);
+				}
+
+				// Imprimindo o vetor desordenado
+				imprimirVetor(vetor);
+				System.out.println();
+
+				msgDoCliente = bufferedReader.readLine();
+
+				switch (Integer.valueOf(msgDoCliente)) {
+				case 1:
+					rt = Runtime.getRuntime();
+					tempoInicio = System.currentTimeMillis();
+					vetor = selectionSortVetor(vetor, vetor.length);
+					tempoFim = System.currentTimeMillis() - tempoInicio;
+					System.out.println("Memória usada: " + (Runtime.getRuntime().freeMemory() - rt.freeMemory()));
+
+					// Imprimindo o vetor ordenado
+					imprimirVetor(vetor);
+					retornarVetor(vetor, resposta);
+					retornarTempo(tempoFim, resposta);
+
+					System.out.println();
+					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
+							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
+					break;
+				case 2:
+					tempoInicio = System.currentTimeMillis();
+					vetor = mergeSortVetor(vetor, vetor.length);
+					tempoFim = System.currentTimeMillis() - tempoInicio;
+
+					// Imprimindo o vetor ordenado
+					imprimirVetor(vetor);
+					retornarVetor(vetor, resposta);
+					retornarTempo(tempoFim, resposta);
+					
+					System.out.println();
+					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
+							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
+					break;
+				}
+			} else if (Integer.valueOf(msgDoCliente) == 2) {
+				listaEncadeada();
+				// Recebendo os valores do cliente
+				for (int i = 0; i < totalValores; i++) {
+					msgDoCliente = bufferedReader.readLine();
+
+					// Atribuindo os valores recebidos na lista
+					Elemento novo = new Elemento(Integer.valueOf(msgDoCliente));
+					inserirElementoFim(novo);
+
+					msgParaCliente = msgDoCliente + " recebido e armazenado";
+					responder(resposta, msgParaCliente);
+				}
+
+				// Imprimindo a lista desordenada
+				listarElementos();
+				System.out.println();
+
+				msgDoCliente = bufferedReader.readLine();
+
+				switch (Integer.valueOf(msgDoCliente)) {
+				case 1:
+					rt = Runtime.getRuntime();
+					long livre, max;
+					livre = rt.freeMemory();
+					max = rt.maxMemory();
+					tempoInicio = System.currentTimeMillis();
+					bubbleSortLista(inicio, tamanho);
+					tempoFim = System.currentTimeMillis() - tempoInicio;
+
+					// Imprimindo a lista ordenada
+					listarElementos();
+					retornarLista(inicio, resposta);
+					retornarTempo(tempoFim, resposta);
+					
+					
+					System.out.println();
+					System.out.println("Antes livre: " + livre);
+					System.out.println("Depois livre: " + max);
+					System.out.println("Memória livre " + rt.freeMemory());
+					System.out.println("Máximo memória: " + rt.maxMemory());
+					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
+							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
+					break;
+				case 2:
+					tempoInicio = System.currentTimeMillis();
+					quickSortLista(inicio);
+					tempoFim = System.currentTimeMillis() - tempoInicio;
+
+					// Imprimindo a lista ordenada
+					listarElementos();
+					retornarLista(inicio, resposta);
+					retornarTempo(tempoFim, resposta);
+					
+					System.out.println();
+					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
+							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
+					break;
+				}
+			} else if (Integer.valueOf(msgDoCliente) == 3) {
+				int vetor[] = new int[totalValores];
+
+				for (int i = 0; i < vetor.length; i++) {
+					msgDoCliente = bufferedReader.readLine();
+
+					vetor[i] = Integer.valueOf(msgDoCliente);
+
+					msgParaCliente = msgDoCliente + " recebido e armazenado";
+					responder(resposta, msgParaCliente);
+				}
+
+				// Imprimindo o vetor desordenado
+				imprimirVetor(vetor);
+				System.out.println();
+
+				tempoInicio = System.currentTimeMillis();
+				Arrays.sort(vetor); // Estrutura de ordenação da linguagem
+				tempoFim = System.currentTimeMillis() - tempoInicio;
+
+				// Imprimindo o vetor ordenado
+				imprimirVetor(vetor);
+				retornarVetor(vetor, resposta);
+				retornarTempo(tempoFim, resposta);
+				
+				System.out.println();
+				System.out.println("\nTempo para ordenação em milisegundos: " + tempoFim + "\n"
+						+ "Tempo para ordenação em segundos: " + tempoFim / 1000);
+
+			}
+
+			System.out.println();
+		}
+	}
+
+	// Manipulação rede
+	public static void responder(DataOutputStream resposta, String mensagem) throws Exception {
+		resposta.writeBytes(mensagem);
+		resposta.writeBytes("\n"); // Fim da linha
+		resposta.flush(); // Manda para o cliente
+	}
+
+	public static void retornarVetor(int vetor[], DataOutputStream resposta) throws Exception {
+		for (int i = 0; i < vetor.length; i++) {
+			String msgParaCliente = String.valueOf(vetor[i]);
+			responder(resposta, msgParaCliente);
+		}
+	}
+	
+	public static void retornarLista(Elemento elemento, DataOutputStream resposta) throws Exception {
+		while (elemento != null) {
+			String msgParaCliente = String.valueOf(elemento.valor);
+			responder(resposta, msgParaCliente);
+			elemento = elemento.prox;
+		}
+	}
+	
+	public static void retornarTempo(long tempoExecucao, DataOutputStream resposta) throws Exception {
+		responder(resposta, String.valueOf(tempoExecucao));
+	}
+	// ./Manipulação rede
+
 	// Estrutura e manipulação lista encadeada
 	public static class Elemento {
 		int valor;
@@ -36,10 +230,6 @@ public class Main {
 		tamanho = 0;
 	}
 
-	public static int getTamanho() {
-		return tamanho;
-	}
-
 	public static void listarElementos() {
 		Elemento aux = inicio;
 		System.out.println("[");
@@ -63,6 +253,7 @@ public class Main {
 	// ./Estrutura e manipulação lista encadeada
 
 	// Ordenação com vetor
+	// n²
 	public static int[] selectionSortVetor(int vetor[], int tamanhoVetor) {
 		for (int i = 0; i < tamanhoVetor - 1; i++) {
 			int aux = i;
@@ -78,6 +269,7 @@ public class Main {
 		return vetor;
 	}
 
+	// n log(n)
 	public static int[] mergeSortVetor(int vetor[], int tamanhoVetor) {
 
 		if (tamanhoVetor <= 1)
@@ -91,13 +283,13 @@ public class Main {
 			direita[i - aux] = vetor[i];
 		mergeSortVetor(esquerda, aux);
 		mergeSortVetor(direita, tamanhoVetor - aux);
-		Merge(esquerda, direita, vetor);
+		merge(esquerda, direita, vetor);
 
 		return vetor;
 
 	}
 
-	public static void Merge(int esquerda[], int direita[], int vetor[]) {
+	public static void merge(int esquerda[], int direita[], int vetor[]) {
 		int nEsquerda = esquerda.length;
 		int nDireita = direita.length;
 		int i, j, k;
@@ -128,13 +320,12 @@ public class Main {
 	public static void imprimirVetor(int[] vetor) {
 		System.out.print("[");
 		for (int i = 0; i < vetor.length; i++) {
-			System.out.print(vetor[i] + ", ");
+			System.out.println(vetor[i]);
 		}
-		System.out.print("]");
+		System.out.print("]\n");
 	}
 	// ./Ordenação com vetor
-	
-	
+
 	// Ordenação com lista
 	public static void bubbleSortLista(Elemento inicio, int tamanho) {
 		int valor;
@@ -160,195 +351,40 @@ public class Main {
 		if (elemento == null)
 			return null;
 
-		Elemento i = elemento;
-		Elemento j = elemento.prox;
-		Elemento pvt = elemento;
-		Elemento store = null;
-		Elemento ptr = null;
+		Elemento elementoAux = elemento;
+		Elemento proxElementoAux = elemento.prox;
+		Elemento pivo = elemento;
+		Elemento temporario = null;
+		Elemento particao = null;
 		int temp;
 
-		while (j != null) {
-			if (j.valor < pvt.valor) {
-				store = i;
-				ptr = i.prox;
+		while (proxElementoAux != null) {
+			if (proxElementoAux.valor < pivo.valor) {
+				temporario = elementoAux;
+				particao = elementoAux.prox;
 
-				i = i.prox;
+				elementoAux = elementoAux.prox;
 
-				temp = i.valor;
-				i.valor = j.valor;
-				j.valor = temp;
+				temp = elementoAux.valor;
+				elementoAux.valor = proxElementoAux.valor;
+				proxElementoAux.valor = temp;
 			}
-			j = j.prox;
+			proxElementoAux = proxElementoAux.prox;
 		}
 
-		if (i != elemento) {
-			temp = i.valor;
-			i.valor = pvt.valor;
-			pvt.valor = temp;
+		if (elementoAux != elemento) {
+			temp = elementoAux.valor;
+			elementoAux.valor = pivo.valor;
+			pivo.valor = temp;
 
-			store.prox = null;
+			temporario.prox = null;
 			quickSortLista(elemento);
-			store.prox = ptr;
+			temporario.prox = particao;
 		}
 
-		quickSortLista(i.prox);
+		quickSortLista(elementoAux.prox);
 
 		return elemento;
 	}
 	// ./Ordenação com lista
-
-	public static void main(String[] args) throws IOException {
-		Socket socket = null;
-		ServerSocket socketServidor = new ServerSocket(2800);
-		String msgCliente = null;
-		DataOutputStream resposta = null;
-		BufferedReader requisicao = null;
-		boolean continuar = true;
-		long tempoInicio, tempoFim;
-		int totalValores;
-		Runtime rt;
-
-		while (continuar) {
-			System.out.println("Aguardando mensagem...");
-			socket = socketServidor.accept(); // Aceitando uma requesição quando chegar
-			System.out.println("Chegou requisição");
-
-			requisicao = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			msgCliente = requisicao.readLine();
-			totalValores = Integer.valueOf(requisicao.readLine());
-			System.out.println("Mensagem do cliente: " + msgCliente);
-			
-			resposta = new DataOutputStream(socket.getOutputStream());
-			// Verificando qual tipo de estrura o cliente escolheu
-			if (Integer.valueOf(msgCliente) == 1) {
-				int vetor[] = new int[totalValores];
-
-				// Recebendo os valores do cliente
-				for (int i = 0; i < vetor.length; i++) {
-					msgCliente = requisicao.readLine();
-					System.out.println("Valor que chegou do cliente: " + msgCliente);
-
-					vetor[i] = Integer.valueOf(msgCliente);
-
-					resposta.writeBytes(msgCliente + " recebido e armazenado");
-					resposta.writeBytes("\n"); // Fim da linha
-					resposta.flush(); // Manda para o cliente
-				}
-
-				// Imprimindo o vetor desordenado
-				imprimirVetor(vetor);
-				System.out.println();
-
-				msgCliente = requisicao.readLine();
-
-				switch (Integer.valueOf(msgCliente)) {
-				case 1:
-					rt = Runtime.getRuntime();
-					tempoInicio = System.currentTimeMillis();
-					vetor = selectionSortVetor(vetor, vetor.length);
-					tempoFim = System.currentTimeMillis() - tempoInicio;
-					System.out.println("Memória usada: " + (Runtime.getRuntime().freeMemory() - rt.freeMemory()));
-
-					// Imprimindo o vetor ordenado
-					imprimirVetor(vetor);
-					System.out.println();
-
-					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
-							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
-
-					break;
-				case 2:
-					tempoInicio = System.currentTimeMillis();
-					vetor = mergeSortVetor(vetor, vetor.length);
-					tempoFim = System.currentTimeMillis() - tempoInicio;
-
-					// Imprimindo o vetor ordenado
-					imprimirVetor(vetor);
-					System.out.println();
-
-					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
-							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
-					break;
-				}
-			} else if (Integer.valueOf(msgCliente) == 2) {
-				listaEncadeada();
-				// Recebendo os valores do cliente
-				for (int i = 0; i < totalValores; i++) {
-					msgCliente = requisicao.readLine();
-
-					// Atribuindo os valores recebidos na lista
-					Elemento novo = new Elemento(Integer.valueOf(msgCliente));
-					inserirElementoFim(novo);
-
-					resposta.writeBytes("Valor " + msgCliente + " recebido e armazenado");
-					resposta.writeBytes("\n"); // Fim da linha
-					resposta.flush(); // Manda para o cliente
-				}
-
-				// Imprimindo a lista desordenada
-				listarElementos();
-				System.out.println();
-
-				msgCliente = requisicao.readLine();
-
-				switch (Integer.valueOf(msgCliente)) {
-				case 1:
-					tempoInicio = System.currentTimeMillis();
-					bubbleSortLista(inicio, tamanho);
-					tempoFim = System.currentTimeMillis() - tempoInicio;
-
-					// Imprimindo a lista ordenada
-					listarElementos();
-					System.out.println();
-
-					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
-							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
-					break;
-				case 2:
-					tempoInicio = System.currentTimeMillis();
-					quickSortLista(inicio);
-					tempoFim = System.currentTimeMillis() - tempoInicio;
-
-					// Imprimindo a lista ordenada
-					listarElementos();
-					System.out.println();
-
-					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
-							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
-					break;
-				}
-			} else if (Integer.valueOf(msgCliente) == 3) {
-				int vetor[] = new int[totalValores];
-
-				for (int i = 0; i < vetor.length; i++) {
-					msgCliente = requisicao.readLine();
-
-					vetor[i] = Integer.valueOf(msgCliente);
-
-					resposta.writeBytes("Valor " + msgCliente + " recebido e armazenado");
-					resposta.writeBytes("\n"); // Fim da linha
-					resposta.flush(); // Manda para o cliente
-				}
-
-				// Imprimindo o vetor desordenado
-				imprimirVetor(vetor);
-				System.out.println();
-
-				tempoInicio = System.currentTimeMillis();
-				Arrays.sort(vetor); // Estrutura de ordenação da linguagem
-				tempoFim = System.currentTimeMillis() - tempoInicio;
-
-				// Imprimindo o vetor ordenado
-				imprimirVetor(vetor);
-				System.out.println();
-
-				System.out.println("\nTempo para ordenação em milisegundos: " + tempoFim + "\n"
-						+ "Tempo para ordenação em segundos: " + tempoFim / 1000);
-				
-			}
-
-			System.out.println();
-		}
-		System.out.println("Fim do programa!");
-	}
 }
