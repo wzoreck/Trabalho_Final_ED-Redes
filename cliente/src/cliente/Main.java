@@ -62,7 +62,7 @@ public class Main {
 			if (tipoLista != 4) {
 				System.out.print("Informe o tamanho da lista a ser criada: ");
 				totalValores = sc.nextInt();
-				
+
 				socket = new Socket("localhost", 2800);
 				bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
@@ -97,41 +97,41 @@ public class Main {
 				tipoOrdenacao = sc.nextInt();
 
 				enviar(bufferedWriter, String.valueOf(tipoOrdenacao));
-				
+
 				System.out.println();
 				System.out.println("Retorno - Valores oredenados: ");
 				System.out.println();
 				bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				for (int i=0; i < totalValores; i++) {
+				for (int i = 0; i < totalValores; i++) {
 					msgRecebida = bufferedReader.readLine(); // Lê a resposta do servidor
 					System.out.println(msgRecebida);
 				}
-				
+
 				// Tempo que demorou para executar
 				msgRecebida = bufferedReader.readLine();
 				System.out.println();
 				System.out.println("\nTempo para ordenação em milisegundos: " + msgRecebida + "\n"
 						+ "Tempo para ordenação em segundos: " + Integer.valueOf(msgRecebida) / 1000);
-				
+
 				socket.close();
 			} else if (tipoLista == 3) {
 				enviar(bufferedWriter, String.valueOf(tipoLista));
-				
+
 				System.out.println();
 				System.out.println("Retorno - Valores oredenados: ");
 				System.out.println();
 				bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				for (int i=0; i < totalValores; i++) {
+				for (int i = 0; i < totalValores; i++) {
 					msgRecebida = bufferedReader.readLine(); // Lê a resposta do servidor
 					System.out.println(msgRecebida);
 				}
-				
+
 				// Tempo que demorou para executar
 				msgRecebida = bufferedReader.readLine();
 				System.out.println();
 				System.out.println("\nTempo para ordenação em milisegundos: " + msgRecebida + "\n"
 						+ "Tempo para ordenação em segundos: " + Integer.valueOf(msgRecebida) / 1000);
-				
+
 				socket.close();
 			} else {
 				sc.close();

@@ -2,7 +2,6 @@ package servidor;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -105,10 +104,6 @@ public class Main {
 
 				switch (Integer.valueOf(msgDoCliente)) {
 				case 1:
-					rt = Runtime.getRuntime();
-					long livre, max;
-					livre = rt.freeMemory();
-					max = rt.maxMemory();
 					tempoInicio = System.currentTimeMillis();
 					bubbleSortLista(inicio, tamanho);
 					tempoFim = System.currentTimeMillis() - tempoInicio;
@@ -120,10 +115,6 @@ public class Main {
 					
 					
 					System.out.println();
-					System.out.println("Antes livre: " + livre);
-					System.out.println("Depois livre: " + max);
-					System.out.println("Memória livre " + rt.freeMemory());
-					System.out.println("Máximo memória: " + rt.maxMemory());
 					System.out.println("Tempo para ordenação em milisegundos: " + tempoFim + "ms\n"
 							+ "Tempo para ordenação em segundos: " + tempoFim / 1000 + "s");
 					break;
